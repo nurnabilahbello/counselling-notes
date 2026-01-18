@@ -97,11 +97,21 @@ button { cursor:pointer; }
 
 <script>
 // ===== Initial Notes =====
-let notes = {
-  New: {
-    Male: { Eyes: { "Eye Drop": "Eye Drops\nPatient is counselled on the use of eye drops:\n- Eye drops regimen and indication.\n- Technique to administer eye drops:\n1. Wash hands.\n2. Shake bottle.\n3. Tilt head up and pull lower eyelid.\n4. Drop the drops.\n5. Close eyes 1 min.\n6. Wipe excess.\n- Wait 5 min before another drop.\n- Storage one month after opening.\nPatient understood well." } }
-  }
-};
+let notes = {};
+
+// ===== Fetch JSON dari GitHub =====
+fetch('https://raw.githubusercontent.com/nurnabilahbello/counselling-notes/refs/heads/main/notes.json')
+  .then(response => response.json())
+  .then(data => {
+    notes = data;
+    populateOrgans();
+    updateDevices();
+    displayNote();
+  })
+  .catch(err => {
+    console.error("Gagal fetch JSON:", err);
+    noteDiv.textContent = "Gagal load data JSON dari GitHub.";
+  });
 
 // ===== DOM =====
 const statusSelect = document.getElementById("status");
@@ -266,3 +276,4 @@ displayNote();
 </script>
 </body>
 </html>
+
