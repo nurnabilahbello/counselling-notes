@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Counselling Notes</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+select, input, textarea, button { margin: 5px 0; padding: 5px; }
+#note { border:1px solid #ccc; padding:10px; width:70%; min-height:150px; max-height:500px; overflow-y:auto; background:#f9f9f9; }
+h2,h3 { color:#333; margin-bottom:5px; }
+label { font-weight:bold; display:block; margin-top:10px; }
+ul { margin-left:20px; list-style-type:none; }
+ul li::before { content: "- "; }
+ol { margin-left:30px; }
+li { margin-bottom:5px; }
+</style>
+</head>
+<body>
+
+<h2>Counselling Notes</h2>
+
+<label>Status:</label>
+<select id="statusFilter">
+  <option value="">--Pilih Status--</option>
+  <option value="New">New</option>
+  <option value="Reassess">Reassess</option>
+</select>
+
+<label>Patient Type:</label>
+<select id="patientFilter">
+  <option value="">--Pilih Patient Type--</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Kids">Kids</option>
+  <option value="Caretaker">Caretaker</option>
+</select>
+
+<label>Organ:</label>
+<select id="organFilter">
+  <option value="">--Pilih Organ--</option>
+</select>
+
+<label>Search Device:</label>
+<input type="text" id="deviceSearch" placeholder="Taip nama device...">
+
+<label>Device / Treatment:</label>
+<select id="deviceFilter">
+  <option value="">--Pilih Device--</option>
+</select>
+
+<br><br>
+<div id="note">Nota akan muncul di sini</div>
+
+<hr>
+
+<h3>Tambah Nota Baru</h3>
+<label>Status:</label><input id="newStatus" value="New"><br>
+<label>Patient Type:</label><input id="newPatient" placeholder="Boleh kosong untuk semua patient type"><br>
+<label>Organ:</label><input id="newOrgan" placeholder="Taip nama organ baru atau pilih sedia ada"><br>
+<label>Device / Category:</label><input id="newDevice"><br>
+<label>Content:</label><br>
+<textarea id="newContent" rows="10" cols="70" placeholder="Gunakan - untuk bullet, 1. untuk numbering, nested bullet boleh indent 2 space. Tekan Tab untuk buat indent."></textarea><br>
+<button onclick="addNote()">Tambah Nota</button>
+<button onclick="exportNotes()">Export JSON</button>
+
+<script>
+let notes = {}; // kosong awal
+const githubLink = "https://raw.githubusercontent.com/nurnabilahbello/counselling-notes/refs/heads/main/notes.json";
+const patientTypes = ["Male","Female","Kids","Caretaker"];
+
+const statusFilter=document.getElementById("statusFilter");
+const patientFilter=document.getElementById("patientFilter");
+const organFilter=document.getElementById("organFilter");
+const deviceFilter=document.getElementById("deviceFilter");
+const noteDiv=document.getElementById("note");
+const deviceSearch=document.getElementById("deviceSearch");
+
+const newContent=document.getElementById("newContent");
+newContent.addEventListener("keydown", function(e){
+  if(e.key==="Tab"){ e.preventDefault();
+    const start=this.selectionStart, end=this.selectionEnd;
+    this.value=this.value.substring(0,start)+"  "+this.value.substring(end);
+    this.selectionStart=this.selectionEnd=start+2;
+  }
+});
+
+function textToHtmlList(text){
+  if(!text) return "";
+  const lines=text.split("\n"); let html=[]; let inMainOl=false, inSubOl=false;
+  lines.forEach(line=>{
+    const trimmed=line.trimStart(); const indent=line.length-trimmed.length;
+    if(/^(\d+)\.\s/.test(trimmed)){
+      const content=trimmed.replace(/^(\d+)\.\s/,'');
+      if(indent===0){ if(inMainOl) html.push("</ol>"); html.push("<ol>"); html.push("<li>"+content+"</li>"); inMainOl=true; inSubOl=false;}
+      else{ if(!inSubOl) html.push("<ol>"); html.push("<li>"+content+"</li>"); inSubOl=true;}
+    } else if(/^- /.test(trimmed)){
+      const content=trimmed.replace(/^- /,'');
+      if(inSubOl){ html.push("</ol>"); inSubOl=false; }
+      html.push("<ul><li>"+content+"</li></ul>");
+    } else{ if(inMainOl){ html.push("</ol>"); inMainOl=false; } if(inSubOl){ html.push("</ol>"); inSubOl=false; } html.push("<p>"+line+"</p>");}
+  });
+  if(inMainOl) html.push("</ol>");
+  if(inSubOl) html.push("</ol>");
+  return html.join("\n");
+}
+
+function updateOrganFilter(){
+  const status=statusFilter.value; const organsSet=new Set();
+  if(status){
+    patientTypes.forEach(p=>{
+      if(notes[status]?.[p]){
+        Object.keys(notes[status][p]).forEach(o=>organsSet.add(o));
+      }
+    });
+  }
+  organFilter.innerHTML='<option value="">--Pilih Organ--</option>';
+  Array.from(organsSet).sort().forEach(o=>{ const opt=document.createElement("option"); opt.value=o; opt.textContent=o; organFilter.appendChild(opt); });
+}
+
+function updateDevices(){
+  const status=statusFilter.value; const patient=patientFilter.value;
+  const organ=organFilter.value; const search=deviceSearch.value.toLowerCase();
+  deviceFilter.innerHTML='<option value="">--Pilih Device--</option>'; noteDiv.innerHTML='Nota akan muncul di sini';
+  if(status && organ){
+    const patients=patient? [patient]: patientTypes;
+    const deviceSet=new Set();
+    patients.forEach(p=>{
+      const deviceList=notes[status]?.[p]?.[organ];
+      if(deviceList) Object.keys(deviceList).forEach(dev=>deviceSet.add(dev));
+    });
+    Array.from(deviceSet).sort().filter(dev=>dev.toLowerCase().includes(search)).forEach(dev=>{
+      const opt=document.createElement("option"); opt.value=dev; opt.textContent=dev; deviceFilter.appendChild(opt);
+    });
+  }
+}
+
+statusFilter.addEventListener("change", ()=>{ updateOrganFilter(); updateDevices(); });
+patientFilter.addEventListener("change", updateDevices);
+organFilter.addEventListener("change", updateDevices);
+deviceSearch.addEventListener("input", updateDevices);
+
+deviceFilter.addEventListener("change", function(){
+  const status=statusFilter.value; const patient=patientFilter.value; const organ=organFilter.value; const device=this.value;
+  if(status && organ && device){
+    let noteText="";
+    for(let p of patient? [patient]: patientTypes){
+      if(notes[status]?.[p]?.[organ]?.[device]){
+        noteText=notes[status][p][organ][device]; break;
+      }
+    }
+    noteDiv.innerHTML=textToHtmlList(noteText);
+  }
+});
+
+// ====== Load JSON dari GitHub ======
+fetch(githubLink)
+  .then(res => res.json())
+  .then(data => {
+    notes = data;
+    updateOrganFilter();
+    updateDevices();
+  })
+  .catch(err => { console.log("Tidak dapat load notes dari GitHub:", err); });
+
+// ====== Tambah Nota ======
+function addNote(){
+  const status=document.getElementById("newStatus").value;
+  const patient=document.getElementById("newPatient").value || "ALL";
+  const organ=document.getElementById("newOrgan").value.trim();
+  const device=document.getElementById("newDevice").value.trim();
+  const content=newContent.value;
+  if(!status || !organ || !device || !content){ return alert("Isi semua medan!"); }
+  notes[status]=notes[status]||{};
+  notes[status][patient]=notes[status][patient]||{};
+  notes[status][patient][organ]=notes[status][patient][organ]||{};
+  notes[status][patient][organ][device]=content;
+  alert("Nota berjaya ditambah! (Patient kosong = semua patient type)");
+  updateOrganFilter(); updateDevices();
+}
+
+// ====== Export JSON ======
+function exportNotes(){
+  addNote();
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notes, null, 2));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", "notes.json");
+  document.body.appendChild(dlAnchor); dlAnchor.click(); dlAnchor.remove();
+}
+</script>
+
+</body>
+</html>
