@@ -1,0 +1,25 @@
+{
+  "New": {
+    "Male": {
+      "Eyes": {
+        "Eye Drop": "Eye Drops\nPatient is counselled on the use of eye drops:\n- Eye drops regimen and indication.\n- Technique to administer eye drops:\n1. Wash hands and dry them.\n2. Shake the bottle 3-5 times. Open bottle cap.\n3. Tilt head up or lie down. Slowly pull down the lower eye lid.\n4. Drop eye drops into the lower eye lid according to the amount of drops instructed.\n5. Close the eyes and press on the inner corner of the eye for 1 minute for the medication to be absorbed.\n6. Straighten your head and wipe away extra liquid around the eye.\n- Wait for 5 minutes before using another eye drop or eye ointment.\n- Storage of only one month after first opening.\nPatient understood well. Thank you.",
+        "Eye Ointment": "Eye Ointment\nPatient is counselled on the use of eye ointment:\n- Eye ointment regimen and indication.\n- Technique to administer eye ointment:\n   1. Wash hands and dry them.\n   2. Tilt head up or lie down. Open the cap.\n   3. Slowly pull down the lower eye lid.\n   4. Squeeze out about 1cm of ointment onto the lower eyelid direct from the tube.\n   5. Close the eyes and press on the inner corner of the eye for 1 minute for the medication to be absorbed.\n   6. Straighten head and wipe away extra liquid around the eye.\n-Eyesight may become blurred for a while after using the ointment.\n- Use eye drops first and wait for 5 minutes before eye ointment.\nPatient understood well. Thank you."
+      }
+    },
+    "Female": {
+      "Eyes": {
+        "Eye Ointment": "Eye Ointment\nPatient is counselled on the use of eye ointment:\n- Eye ointment regimen and indication.\n- Technique to administer eye ointment:\n   1. Wash hands and dry them.\n   2. Tilt head up or lie down. Open the cap.\n   3. Slowly pull down the lower eye lid.\n   4. Squeeze out about 1cm of ointment onto the lower eyelid direct from the tube.\n   5. Close the eyes and press on the inner corner of the eye for 1 minute for the medication to be absorbed.\n   6. Straighten head and wipe away extra liquid around the eye.\n-Eyesight may become blurred for a while after using the ointment.\n- Use eye drops first and wait for 5 minutes before eye ointment.\nPatient understood well. Thank you."
+      }
+    },
+    "Kids": {
+      "Eyes": {
+        "Eye Ointment": "Eye Ointment\nPatient is counselled on the use of eye ointment:\n- Eye ointment regimen and indication.\n- Technique to administer eye ointment:\n   1. Wash hands and dry them.\n   2. Tilt head up or lie down. Open the cap.\n   3. Slowly pull down the lower eye lid.\n   4. Squeeze out about 1cm of ointment onto the lower eyelid direct from the tube.\n   5. Close the eyes and press on the inner corner of the eye for 1 minute for the medication to be absorbed.\n   6. Straighten head and wipe away extra liquid around the eye.\n-Eyesight may become blurred for a while after using the ointment.\n- Use eye drops first and wait for 5 minutes before eye ointment.\nPatient understood well. Thank you."
+      }
+    },
+    "Caretaker": {
+      "Eyes": {
+        "Eye Ointment": "Eye Ointment\nPatient is counselled on the use of eye ointment:\n- Eye ointment regimen and indication.\n- Technique to administer eye ointment:\n   1. Wash hands and dry them.\n   2. Tilt head up or lie down. Open the cap.\n   3. Slowly pull down the lower eye lid.\n   4. Squeeze out about 1cm of ointment onto the lower eyelid direct from the tube.\n   5. Close the eyes and press on the inner corner of the eye for 1 minute for the medication to be absorbed.\n   6. Straighten head and wipe away extra liquid around the eye.\n-Eyesight may become blurred for a while after using the ointment.\n- Use eye drops first and wait for 5 minutes before eye ointment.\nPatient understood well. Thank you."
+      }
+    }
+  }
+}
