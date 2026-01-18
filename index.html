@@ -4,54 +4,15 @@
 <meta charset="UTF-8">
 <title>Counselling Notes</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background-color: #cce7ff;
-}
-
-.filters {
-  display:flex;
-  gap:15px;
-  align-items:center;
-  flex-wrap:wrap;
-  margin-bottom:10px;
-}
-
-.filters div {
-  display:flex;
-  flex-direction:column;
-}
-
-select, input, textarea, button {
-  margin:5px 0;
-  padding:5px;
-}
-
-#note {
-  border:1px solid #ccc;
-  padding:10px;
-  width:70%;
-  min-height:150px;
-  max-height:500px;
-  overflow:auto;
-  background:#f9f9f9;
-  margin-top:5px;
-  white-space: pre-wrap;
-}
-
-#addNoteSlot {
-  border:1px solid #aaa;
-  padding:10px;
-  width:70%;
-  background:#e6f2ff;
-  margin-top:20px;
-}
-
+body { font-family: Arial, sans-serif; margin:20px; background:#cce7ff; }
+.filters { display:flex; gap:15px; align-items:center; flex-wrap:wrap; margin-bottom:10px; }
+.filters div { display:flex; flex-direction:column; }
+select,input,textarea,button { margin:5px 0; padding:5px; }
+#note { border:1px solid #ccc; padding:10px; width:70%; min-height:150px; max-height:500px; overflow:auto; background:#f9f9f9; margin-top:5px; white-space: pre-wrap; }
+#addNoteSlot { border:1px solid #aaa; padding:10px; width:70%; background:#e6f2ff; margin-top:20px; }
 h2,h3,h4 { color:#333; margin-bottom:5px; }
 label { font-weight:bold; margin-top:10px; }
 button { cursor:pointer; }
-#searchBox { padding:5px; margin-top:10px; width:300px; }
 </style>
 </head>
 <body>
@@ -60,74 +21,24 @@ button { cursor:pointer; }
 
 <!-- Horizontal Filter for existing notes -->
 <div class="filters">
-  <div>
-    <label>Status:</label>
-    <select id="status">
-      <option value="">--Pilih Status--</option>
-      <option value="New">New</option>
-      <option value="Reassess">Reassess</option>
-    </select>
-  </div>
-  <div>
-    <label>Patient Type:</label>
-    <select id="patientType">
-      <option value="">--Pilih Patient Type--</option>
-      <option value="Male">Male</option>
-      <option value="Female">Female</option>
-      <option value="Kids">Kids</option>
-      <option value="Caretaker">Caretaker</option>
-    </select>
-  </div>
-  <div>
-    <label>Organ:</label>
-    <select id="organ">
-      <option value="">--Pilih Organ--</option>
-    </select>
-  </div>
-  <div>
-    <label>Device / Treatment:</label>
-    <select id="device">
-      <option value="">--Pilih Device--</option>
-    </select>
-  </div>
+  <div><label>Status:</label><select id="status"><option value="">--Pilih Status--</option><option value="New">New</option><option value="Reassess">Reassess</option></select></div>
+  <div><label>Patient Type:</label><select id="patientType"><option value="">--Pilih Patient Type--</option><option value="Male">Male</option><option value="Female">Female</option><option value="Kids">Kids</option><option value="Caretaker">Caretaker</option></select></div>
+  <div><label>Organ:</label><select id="organ"><option value="">--Pilih Organ--</option></select></div>
+  <div><label>Device / Treatment:</label><select id="device"><option value="">--Pilih Device--</option></select></div>
 </div>
 
-<!-- Search Box -->
-<input type="text" id="searchBox" placeholder="Cari perkataan dalam nota">
+<input type="text" id="searchBox" placeholder="Search keyword...">
 
-<!-- Title for Notes -->
 <h3>Nota</h3>
 <div id="note">Paparan nota akan muncul di sini</div>
 
 <!-- Add Note Slot -->
 <div id="addNoteSlot">
   <div class="filters">
-    <div>
-      <label>Status:</label>
-      <select id="newStatus">
-        <option value="">--Pilih Status--</option>
-        <option value="New">New</option>
-        <option value="Reassess">Reassess</option>
-      </select>
-    </div>
-    <div>
-      <label>Patient Type:</label>
-      <select id="newPatient">
-        <option value="">--Pilih Patient Type--</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-        <option value="Kids">Kids</option>
-        <option value="Caretaker">Caretaker</option>
-      </select>
-    </div>
-    <div>
-      <label>Organ:</label>
-      <input type="text" id="newOrgan">
-    </div>
-    <div>
-      <label>Device / Treatment:</label>
-      <input type="text" id="newDevice">
-    </div>
+    <div><label>Status:</label><select id="newStatus"><option value="">--Pilih Status--</option><option value="New">New</option><option value="Reassess">Reassess</option></select></div>
+    <div><label>Patient Type:</label><select id="newPatient"><option value="">--Pilih Patient Type--</option><option value="Male">Male</option><option value="Female">Female</option><option value="Kids">Kids</option><option value="Caretaker">Caretaker</option></select></div>
+    <div><label>Organ:</label><input type="text" id="newOrgan"></div>
+    <div><label>Device / Treatment:</label><input type="text" id="newDevice"></div>
   </div>
 
   <h3>Nota</h3>
@@ -138,172 +49,125 @@ button { cursor:pointer; }
 </div>
 
 <script>
-// ===== Load JSON from GitHub =====
-let notes = {};
+document.addEventListener("DOMContentLoaded",()=>{
 
-const githubJSONUrl = "https://raw.githack.com/nurnabilahbello/counselling-notes/main/notes.json";
+// Main notes object
+let notes={};
 
-fetch(githubJSONUrl)
-  .then(res => res.json())
-  .then(data=>{
-      notes = data;
-      populateOrgans();
-      updateDevices();
-      displayNote();
-  })
-  .catch(err=>{
-      console.error("Error load JSON:", err);
-      notes = {}; // fallback
-  });
+// Demo initial notes (awak boleh export/import JSON bila perlu)
+notes={
+  New:{Male:{Eyes:{"Eye Drop":"Eye Drops\nPatient is counselled on the use of eye drops:\n- Eye drops regimen and indication.\n- Technique to administer eye drops:\n\t1. Wash hands and dry them.\n\t2. Shake the bottle 3-5 times. Open bottle cap.\n\t3. Tilt head up or lie down. Slowly pull down the lower eye lid.\n\t4. Drop eye drops into the lower eye lid according to the amount of drops instructed.\n\t5. Close the eyes and press on the inner corner of the eye for 1 minute for the medication to be absorbed.\n\t6. Straighten your head and wipe away extra liquid around the eye.\n- Wait for 5 minutes before using another eye drop or eye ointment.\n- Storage of only one month after first opening.\nPatient understood well. Thank you."}}}
+};
 
-// ===== DOM =====
-const statusSelect = document.getElementById("status");
-const patientSelect = document.getElementById("patientType");
-const organSelect = document.getElementById("organ");
-const deviceSelect = document.getElementById("device");
-const noteDiv = document.getElementById("note");
-const searchBox = document.getElementById("searchBox");
+// Elements
+const statusSelect=document.getElementById("status");
+const patientSelect=document.getElementById("patientType");
+const organSelect=document.getElementById("organ");
+const deviceSelect=document.getElementById("device");
+const noteDiv=document.getElementById("note");
+const searchBox=document.getElementById("searchBox");
 
-const newStatus = document.getElementById("newStatus");
-const newPatient = document.getElementById("newPatient");
-const newOrganInput = document.getElementById("newOrgan");
-const newDeviceInput = document.getElementById("newDevice");
-const newNoteInput = document.getElementById("newNote");
-const addNoteBtn = document.getElementById("addNote");
-const addAllBtn = document.getElementById("addAllPatient");
-const exportBtn = document.getElementById("exportJSON");
+const newStatus=document.getElementById("newStatus");
+const newPatient=document.getElementById("newPatient");
+const newOrganInput=document.getElementById("newOrgan");
+const newDeviceInput=document.getElementById("newDevice");
+const newNoteInput=document.getElementById("newNote");
+const addNoteBtn=document.getElementById("addNote");
+const addAllBtn=document.getElementById("addAllPatient");
+const exportBtn=document.getElementById("exportJSON");
 
-// ===== Populate Organ Dropdown dynamically =====
+// Helper functions
 function populateOrgans(){
-  let organs = new Set();
+  let organs=new Set();
   Object.keys(notes).forEach(status=>{
     Object.keys(notes[status]).forEach(patient=>{
-      Object.keys(notes[status][patient]).forEach(org=>{
-        organs.add(org);
-      });
+      Object.keys(notes[status][patient]).forEach(org=>organs.add(org));
     });
   });
-  organSelect.innerHTML = '<option value="">--Pilih Organ--</option>';
-  organs.forEach(o=>{
-    const opt = document.createElement("option");
-    opt.value = o;
-    opt.textContent = o;
-    organSelect.appendChild(opt);
-  });
+  organSelect.innerHTML='<option value="">--Pilih Organ--</option>';
+  organs.forEach(o=>{const opt=document.createElement("option"); opt.value=o; opt.textContent=o; organSelect.appendChild(opt);});
 }
 
-// ===== Update Device Dropdown based on Organ =====
 function updateDevices(){
-  const status = statusSelect.value;
-  const patient = patientSelect.value;
-  const organ = organSelect.value;
-  deviceSelect.innerHTML = '<option value="">--Pilih Device--</option>';
-
-  if(!organ) return;
-
-  let devices = new Set();
-  if(status && patient){
-    const list = notes[status]?.[patient]?.[organ];
-    if(list) Object.keys(list).forEach(d=>devices.add(d));
+  deviceSelect.innerHTML='<option value="">--Pilih Device--</option>';
+  const status=statusSelect.value;
+  const patient=patientSelect.value;
+  const organ=organSelect.value;
+  if(status && patient && organ){
+    const list=notes[status]?.[patient]?.[organ];
+    if(list) Object.keys(list).forEach(d=>{const opt=document.createElement("option"); opt.value=d; opt.textContent=d; deviceSelect.appendChild(opt);});
   }
-
-  devices.forEach(d=>{
-    const opt = document.createElement("option");
-    opt.value = d;
-    opt.textContent = d;
-    deviceSelect.appendChild(opt);
-  });
 }
 
-// ===== Display Notes based on filter & search =====
 function displayNote(){
-  const status = statusSelect.value;
-  const patient = patientSelect.value;
-  const organ = organSelect.value;
-  const device = deviceSelect.value;
-  const keyword = searchBox.value.trim().toLowerCase();
-  noteDiv.innerHTML = "";
-
-  let content = "";
-
-  // If search keyword exists, override filter
+  const status=statusSelect.value;
+  const patient=patientSelect.value;
+  const organ=organSelect.value;
+  const device=deviceSelect.value;
+  const keyword=searchBox.value.trim().toLowerCase();
+  let content="";
   if(keyword){
-    Object.keys(notes).forEach(status=>{
-      Object.keys(notes[status]).forEach(patient=>{
-        Object.keys(notes[status][patient]).forEach(org=>{
-          Object.keys(notes[status][patient][org]).forEach(dev=>{
-            const noteText = notes[status][patient][org][dev];
-            if(noteText.toLowerCase().includes(keyword)){
-              content += `Status: ${status}\nPatient: ${patient}\nOrgan: ${org}\nDevice: ${dev}\n${noteText}\n\n`;
-            }
+    Object.keys(notes).forEach(s=>{
+      Object.keys(notes[s]).forEach(p=>{
+        Object.keys(notes[s][p]).forEach(o=>{
+          Object.keys(notes[s][p][o]).forEach(d=>{
+            const n=notes[s][p][o][d];
+            if(n.toLowerCase().includes(keyword)) content+=`Status: ${s}\nPatient: ${p}\nOrgan: ${o}\nDevice: ${d}\n${n}\n\n`;
           });
         });
       });
     });
-    noteDiv.textContent = content || "Tiada nota ditemui untuk perkataan itu.";
+    noteDiv.textContent=content||"Tiada nota ditemui untuk perkataan itu.";
     return;
   }
-
-  // Normal filter display
   if(status && patient && organ && device){
-    const noteText = notes[status]?.[patient]?.[organ]?.[device];
-    if(noteText) content = noteText;
+    content=notes[status]?.[patient]?.[organ]?.[device]||"";
   }
-
-  noteDiv.textContent = content || "Paparan nota akan muncul selepas Device dipilih atau search perkataan.";
+  noteDiv.textContent=content||"Paparan nota akan muncul selepas Device dipilih atau search perkataan.";
 }
 
-// ===== Event Listeners =====
-statusSelect.addEventListener("change", ()=>{ updateDevices(); displayNote(); });
+// Filter events
+statusSelect.addEventListener("change",()=>{ updateDevices(); displayNote(); });
 patientSelect.addEventListener("change", displayNote);
-organSelect.addEventListener("change", ()=>{ updateDevices(); displayNote(); });
+organSelect.addEventListener("change",()=>{ updateDevices(); displayNote(); });
 deviceSelect.addEventListener("change", displayNote);
 searchBox.addEventListener("input", displayNote);
 
-// ===== Add Note Function =====
+// Add note function
 function addNoteToPatients(all=false){
-  const status = newStatus.value;
-  const organ = newOrganInput.value.trim();
-  const device = newDeviceInput.value.trim();
-  const noteText = newNoteInput.value.trim();
-  if(!status || !organ || !device || !noteText){
-    alert("Sila pilih Status, dan masukkan Organ, Device/Treatment dan Nota.");
-    return;
-  }
-
-  const targetPatients = all ? ["Male","Female","Kids","Caretaker"] : [newPatient.value || "Male"];
-  targetPatients.forEach(p=>{
-    if(!notes[status][p]) notes[status][p] = {};
-    if(!notes[status][p][organ]) notes[status][p][organ] = {};
-    const oldNote = notes[status][p][organ][device] || "";
-    notes[status][p][organ][device] = oldNote ? oldNote + "\n" + noteText : noteText;
+  const status=newStatus.value.trim();
+  const organ=newOrganInput.value.trim();
+  const device=newDeviceInput.value.trim();
+  const noteText=newNoteInput.value.trim();
+  if(!status || !organ || !device || !noteText){ alert("Sila pilih Status dan masukkan Organ, Device/Treatment dan Nota."); return; }
+  const patients=all?["Male","Female","Kids","Caretaker"]:(newPatient.value? [newPatient.value]: ["Male"]);
+  patients.forEach(p=>{
+    if(!notes[status][p]) notes[status][p]={};
+    if(!notes[status][p][organ]) notes[status][p][organ]={};
+    const oldNote=notes[status][p][organ][device]||"";
+    notes[status][p][organ][device]=oldNote?oldNote+"\n"+noteText:noteText;
   });
-
-  newNoteInput.value = "";
-  newOrganInput.value = "";
-  newDeviceInput.value = "";
-
-  populateOrgans();
-  updateDevices();
-  displayNote();
+  // reset inputs
+  newStatus.value=""; newPatient.value=""; newOrganInput.value=""; newDeviceInput.value=""; newNoteInput.value="";
+  populateOrgans(); updateDevices(); displayNote();
 }
 
-addNoteBtn.addEventListener("click", ()=>{ addNoteToPatients(false); });
-addAllBtn.addEventListener("click", ()=>{ addNoteToPatients(true); });
-
-// ===== Export JSON =====
-exportBtn.addEventListener("click", ()=>{
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notes,null,2));
-  const dlAnchor = document.createElement('a');
-  dlAnchor.setAttribute("href", dataStr);
+// Button events
+addNoteBtn.addEventListener("click",()=>{ addNoteToPatients(false); });
+addAllBtn.addEventListener("click",()=>{ addNoteToPatients(true); });
+exportBtn.addEventListener("click",()=>{
+  const dataStr="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(notes,null,2));
+  const dlAnchor=document.createElement('a');
+  dlAnchor.setAttribute("href",dataStr);
   dlAnchor.setAttribute("download","notes.json");
   dlAnchor.click();
 });
 
-// ===== Initial Load =====
-populateOrgans();
-updateDevices();
-displayNote();
+// init
+populateOrgans(); updateDevices(); displayNote();
+
+});
 </script>
+
 </body>
 </html>
