@@ -44,7 +44,7 @@
   "Reassess": {
     "Male": {
       "Eyes": {
-        "Eye Ointment": "Reassess Eye Drops\n1. Patient is counselled and reassessed on the use of eye drops:\n2. Eye drops regimen and indication.\n3. Techniques of administration:\n   - Shake before use.\n   - Press on the inner corner of the eye and maintain position for 1 minute after instilling drops.\n4. 5 minutes interval between different eye drops.\n5. Importance of hand hygiene.\nPatient understood well. Thank you."
+        "Eye Drop": "Reassess Eye Drops\n1. Patient is counselled and reassessed on the use of eye drops:\n2. Eye drops regimen and indication.\n3. Techniques of administration:\n   - Shake before use.\n   - Press on the inner corner of the eye and maintain position for 1 minute after instilling drops.\n4. 5 minutes interval between different eye drops.\n5. Importance of hand hygiene.\nPatient understood well. Thank you."
       },
       "Nasal": {
         "Nasal Spray": "Patient is counselled and reassessed on the use of nasal spray:\n1. Nasal spray name, regimen and indication\n2. Technique of use. Remind on:\n   - Shake before use\n   - Priming\n   - Holding technique\n   - Point towards eye\n   - Spray and inhale at the same time, then exhale through mouth\n   - One minute interval before second spray\n3. Hand hygiene and wipe after each use.\nPatient understood well. Thank you."
