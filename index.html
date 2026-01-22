@@ -100,7 +100,7 @@ button { cursor:pointer; }
 let notes = {};
 
 // ===== Fetch JSON dari GitHub =====
-fetch('notes.json')
+fetch('https://github.com/nurnabilahbello/counselling-notes/blob/main/notes.json')
   .then(response => response.json())
   .then(data => {
     notes = data;
@@ -276,5 +276,6 @@ displayNote();
 </script>
 </body>
 </html>
+
 
 
